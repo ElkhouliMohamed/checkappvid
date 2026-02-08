@@ -23,6 +23,7 @@ class VideoAnalysisService
 
         try {
             // 1. Get Video File
+            $video->update(['status' => 'Downloading Video...']);
             if ($video->url) {
                 $videoPath = $this->downloadVideo($video->url);
             } elseif ($video->file_path) {
@@ -36,6 +37,7 @@ class VideoAnalysisService
             }
 
             // 2. Upload to Gemini
+            $video->update(['status' => 'Uploading to Gemini...']);
             Log::info("Uploading video to Gemini: $videoPath");
             $uploadResult = $this->geminiService->uploadFile($videoPath);
             $fileUri = $uploadResult['file']['uri'] ?? null;
@@ -47,11 +49,13 @@ class VideoAnalysisService
             }
 
             // 3. Wait for processing
+            $video->update(['status' => 'Processing Video...']);
             Log::info("Waiting for Gemini processing: $fileName");
             $this->geminiService->waitForProcessing($fileName);
 
             // 4. Generate Content
-            $model = $video->model ?? 'gemini-2.5-flash';
+            $model = $video->model ?? 'gemini-3.0-flash'; // Default to 3.0-flash if not set
+            $video->update(['status' => "Analyzing with $model..."]);
             Log::info("Generating content with model: $model");
 
             $prompt = "Analyze this video for adult content, violence, and other safety concerns.

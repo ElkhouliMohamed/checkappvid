@@ -38,7 +38,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         url: '',
         file: null as File | null,
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.0-flash',
         api_key: '',
     });
 
@@ -144,10 +144,12 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                                     <SelectValue placeholder="Select a model" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash (Recommended)</SelectItem>
-                                                    <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro (High Reasoning)</SelectItem>
-                                                    <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash (New & Fast)</SelectItem>
-                                                    <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro (Advanced)</SelectItem>
+                                                    <SelectItem value="gemini-3.0-flash">Gemini 3.0 Flash (Recommended)</SelectItem>
+                                                    <SelectItem value="gemini-3.0-pro">Gemini 3.0 Pro (Most Capable)</SelectItem>
+                                                    <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                                                    <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                                                    <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
+                                                    <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
