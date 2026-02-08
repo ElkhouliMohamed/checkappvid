@@ -13,6 +13,13 @@ class ProcessVideo implements ShouldQueue
     public $apiKey;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 1200;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(\App\Models\Video $video, ?string $apiKey = null)
@@ -29,6 +36,11 @@ class ProcessVideo implements ShouldQueue
      */
     public function handle(\App\Services\VideoAnalysisService $analyzer): void
     {
+        // Increase PHP execution time limit to infinity for this job
+        set_time_limit(0);
+        ini_set('max_execution_time', 1800); // 30 minutes explicitly
+
+
         try {
             $this->video->update(['status' => 'processing']);
 

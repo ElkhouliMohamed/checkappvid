@@ -138,10 +138,20 @@ class VideoAnalysisService
         $filename = 'vid_' . uniqid() . '.mp4';
         $outputPath = $tempPath . '/' . $filename;
 
-        $ytDlpPath = storage_path('bin/yt-dlp.exe');
+        // Determine yt-dlp path: use env var, or default to 'yt-dlp' (system path) for non-Windows, or storage path for Windows fallback
+        $ytDlpPath = env('YT_DLP_PATH');
 
-        if (!file_exists($ytDlpPath)) {
-            throw new Exception("yt-dlp binary not found at $ytDlpPath. Please download it to storage/bin/yt-dlp.exe");
+        if (!$ytDlpPath) {
+            if (PHP_OS_FAMILY === 'Windows') {
+                $ytDlpPath = storage_path('bin/yt-dlp.exe');
+            } else {
+                $ytDlpPath = 'yt-dlp';
+            }
+        }
+
+        // On Windows, verify the storage path exists if we fell back to it
+        if (PHP_OS_FAMILY === 'Windows' && str_contains($ytDlpPath, 'storage') && !file_exists($ytDlpPath)) {
+            throw new Exception("yt-dlp binary not found at $ytDlpPath. Please download it to storage/bin/yt-dlp.exe or set YT_DLP_PATH in .env");
         }
 
         $cmd = "\"$ytDlpPath\" --format \"best[ext=mp4]\" -o \"$outputPath\" \"$url\"";
@@ -159,9 +169,12 @@ class VideoAnalysisService
             'TEMP' => $ytDlpTempPath,
             'TMP' => $ytDlpTempPath,
             'TMPDIR' => $ytDlpTempPath,
-            'SystemRoot' => env('SystemRoot', 'C:\\Windows'), // Required for some windows ops
-            'PATH' => env('PATH'),
+            'PATH' => getenv('PATH'),
         ];
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            $env['SystemRoot'] = getenv('SystemRoot') ?: 'C:\\Windows';
+        }
 
         $result = Process::timeout(1200)->env($env)->run($cmd);
 

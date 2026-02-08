@@ -1,4 +1,4 @@
-import { Head, Link, useForm, router, usePoll } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Trash2, Upload, Youtube, Play, Film, Clock, Search, Plus, Loader2 } from 'lucide-react';
 import AppLayout from '@/Layouts/AppLayout';
 import type { BreadcrumbItem } from '@/Types';
@@ -7,7 +7,7 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/Components/UI/Card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/UI/Select';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/UI/Tabs"
 
 // Local route helper
@@ -35,11 +35,18 @@ interface Video {
 }
 
 export default function Dashboard({ videos }: { videos: Video[] }) {
-    usePoll(3000);
+    // Poll for updates every 3 seconds to show progress logs in real-time
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ only: ['videos'] });
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         url: '',
         file: null as File | null,
-        model: 'gemini-3.0-flash',
+        model: 'gemini-3-flash-preview',
         api_key: '',
     });
 
@@ -145,8 +152,8 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                                     <SelectValue placeholder="Select a model" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="gemini-3.0-flash">Gemini 3.0 Flash (Recommended)</SelectItem>
-                                                    <SelectItem value="gemini-3.0-pro">Gemini 3.0 Pro (Most Capable)</SelectItem>
+                                                    <SelectItem value="gemini-3-flash-preview">Gemini 3 Flash Preview (Recommended)</SelectItem>
+                                                    <SelectItem value="gemini-3-pro-preview">Gemini 3 Pro Preview (Most Capable)</SelectItem>
                                                     <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
                                                     <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
                                                     <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
