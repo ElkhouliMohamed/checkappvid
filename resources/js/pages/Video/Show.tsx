@@ -2,7 +2,16 @@ import { Head, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { useEffect } from 'react';
+
+// Local route helper until Ziggy global is sorted
+const route = (name: string, params?: any) => {
+    if (name === 'dashboard') return '/dashboard';
+    if (name === 'videos.show') return `/videos/${params}`;
+    return '/';
+};
 
 interface Flag {
     timestamp: string;
@@ -16,6 +25,7 @@ interface Report {
     summary: string;
     flags: Flag[];
     error?: string;
+    output?: string;
 }
 
 interface Video {
@@ -80,7 +90,14 @@ export default function Show({ video }: { video: Video }) {
                             <CardTitle className="text-red-500">Analysis Failed</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p>{video.report_json?.error || 'An unknown error occurred during processing.'}</p>
+                            <p className="font-medium text-red-600 mb-2">{video.report_json?.error || 'An unknown error occurred during processing.'}</p>
+                            {video.report_json?.output && (
+                                <ScrollArea className="h-32 w-full rounded-md border bg-muted p-4">
+                                    <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono">
+                                        {video.report_json.output}
+                                    </pre>
+                                </ScrollArea>
+                            )}
                         </CardContent>
                     </Card>
                 )}

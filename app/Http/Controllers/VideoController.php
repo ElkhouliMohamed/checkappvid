@@ -23,6 +23,20 @@ class VideoController extends Controller
             'file' => 'required_without:url|file|mimetypes:video/mp4,video/quicktime|nullable',
         ]);
 
+        $url = $validated['url'] ?? null;
+
+        // Caching: Check if we already analyzed this URL successfully
+        if ($url) {
+            $cachedVideo = Video::where('url', $url)
+                ->where('status', 'completed')
+                ->latest()
+                ->first();
+
+            if ($cachedVideo) {
+                return redirect()->route('videos.show', $cachedVideo->id);
+            }
+        }
+
         $path = null;
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('videos');
@@ -30,14 +44,17 @@ class VideoController extends Controller
 
         $video = Video::create([
             'user_id' => auth()->id(), // nullable if no auth
-            'url' => $validated['url'] ?? null,
+            'url' => $url,
             'file_path' => $path,
-            'title' => $validated['url'] ?? $request->file('file')->getClientOriginalName(),
+            'title' => $url ?? $request->file('file')->getClientOriginalName(),
             'status' => 'pending',
             'model' => $request->input('model', 'gemini-1.5-flash'),
         ]);
 
-        ProcessVideo::dispatch($video);
+        // Pass API key if provided, otherwise the job will use .env
+        $apiKey = $request->input('api_key');
+
+        ProcessVideo::dispatch($video, $apiKey);
 
         return redirect()->route('videos.show', $video->id);
     }
@@ -47,5 +64,17 @@ class VideoController extends Controller
         return Inertia::render('Video/Show', [
             'video' => $video
         ]);
+    }
+
+    public function destroy(Video $video)
+    {
+        // Delete associated file if it exists
+        if ($video->file_path && \Illuminate\Support\Facades\Storage::exists($video->file_path)) {
+            \Illuminate\Support\Facades\Storage::delete($video->file_path);
+        }
+
+        $video->delete();
+
+        return redirect()->route('dashboard');
     }
 }

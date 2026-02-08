@@ -6,23 +6,41 @@ import time
 from dotenv import load_dotenv
 import google.generativeai as genai
 import yt_dlp
-from moviepy.editor import VideoFileClip
+try:
+    from moviepy.editor import VideoFileClip
+except ImportError:
+    from moviepy import VideoFileClip
 
 # Load environment variables
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print(json.dumps({"error": "GEMINI_API_KEY not found in .env"}))
-    sys.exit(1)
+# Load environment variables
+load_dotenv()
 
-genai.configure(api_key=GEMINI_API_KEY)
+# Global configuration moved to main() to allow argument override
+
+def get_video_title(url):
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'noprogress': True,
+            'no_warnings': True,
+            'logger': None,
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            return info.get('title', 'Unknown Title')
+    except Exception:
+        return 'Unknown Title'
 
 def download_video(url, output_path="temp_video.mp4"):
     ydl_opts = {
         'format': 'best[ext=mp4]',
         'outtmpl': output_path,
         'quiet': True,
+        'noprogress': True,
+        'no_warnings': True,
+        'logger': None,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
@@ -61,21 +79,40 @@ def parse_timestamp(timestamp_str):
         return parts[0] * 3600 + parts[1] * 60 + parts[2]
     return 0
 
+def retry_api_call(func, *args, retries=5, delay=2, **kwargs):
+    for i in range(retries):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            if "429" in str(e) or "quoata" in str(e).lower() or "resource" in str(e).lower():
+                if i == retries - 1:
+                    raise e
+                sleep_time = delay * (2 ** i)
+                print(f"Rate limit hit. Retrying in {sleep_time}s...", file=sys.stderr)
+                time.sleep(sleep_time)
+            else:
+                raise e
+    return None
+
 def analyze_video_content(video_path, model_name="gemini-1.5-flash", offset_seconds=0):
     print(f"Uploading {video_path} to Gemini...", file=sys.stderr)
-    video_file = genai.upload_file(video_path)
+    video_file = retry_api_call(genai.upload_file, video_path)
     
     while video_file.state.name == "PROCESSING":
         print('.', end='', flush=True, file=sys.stderr)
         time.sleep(2)
-        video_file = genai.get_file(video_file.name)
+        video_file = retry_api_call(genai.get_file, video_file.name)
 
     if video_file.state.name == "FAILED":
         raise ValueError(f"Video processing failed: {video_file.state.name}")
 
     print(f"\nAnalysis starting with {model_name}...", file=sys.stderr)
     
-    model = genai.GenerativeModel(model_name)
+    try:
+        model = genai.GenerativeModel(model_name)
+    except Exception:
+        print(f"Model {model_name} not found or not supported. Falling back to gemini-2.0-flash.", file=sys.stderr)
+        model = genai.GenerativeModel("gemini-2.0-flash")
     
     prompt = """
     Analyze this video for adult content, violence, and other safety concerns.
@@ -95,7 +132,7 @@ def analyze_video_content(video_path, model_name="gemini-1.5-flash", offset_seco
     Ensure the output is strictly valid JSON.
     """
     
-    response = model.generate_content([video_file, prompt], request_options={"timeout": 600})
+    response = retry_api_call(model.generate_content, [video_file, prompt], request_options={"timeout": 600})
     
     # Clean up JSON
     text = response.text
@@ -119,19 +156,33 @@ def main():
     parser = argparse.ArgumentParser(description="Analyze video content with Gemini.")
     parser.add_argument("--url", help="YouTube video URL")
     parser.add_argument("--file", help="Local video file path")
-    parser.add_argument("--model", default="gemini-1.5-flash", help="Gemini model name")
+    parser.add_argument("--model", default="gemini-2.0-flash", help="Gemini model name")
+    
+    parser.add_argument("--api_key", help="Gemini API Key (overrides .env)")
     
     args = parser.parse_args()
+    
+    # Configure API Key
+    api_key = args.api_key or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        print(json.dumps({"error": "GEMINI_API_KEY not found in .env and not provided as argument"}))
+        sys.exit(1)
+        
+    genai.configure(api_key=api_key)
     
     created_files = []
     
     try:
         video_path = None
+        video_title = None
+
         if args.url:
+            video_title = get_video_title(args.url)
             video_path = download_video(args.url)
             created_files.append(video_path)
         elif args.file:
             video_path = args.file
+            video_title = os.path.basename(args.file)
         else:
             print(json.dumps({"error": "No URL or file provided"}))
             sys.exit(1)
@@ -144,6 +195,7 @@ def main():
         CHUNK_LIMIT = 1200 # 20 minutes
         
         final_result = {
+            "title": video_title,
             "safety_score": 100,
             "summary": "",
             "flags": []

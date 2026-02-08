@@ -10,13 +10,15 @@ class ProcessVideo implements ShouldQueue
     use Queueable;
 
     public $video;
+    public $apiKey;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(\App\Models\Video $video)
+    public function __construct(\App\Models\Video $video, ?string $apiKey = null)
     {
         $this->video = $video;
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -39,9 +41,14 @@ class ProcessVideo implements ShouldQueue
             return;
         }
 
-        // Add model if needed, could be passed in video metadata or default
+        // Add model if needed
         $args[] = '--model';
         $args[] = $this->video->model ?? 'gemini-1.5-flash';
+
+        if ($this->apiKey) {
+            $args[] = '--api_key';
+            $args[] = $this->apiKey;
+        }
 
         $command = array_merge([$pythonExecutable, $pythonScriptPath], $args);
 
@@ -49,23 +56,54 @@ class ProcessVideo implements ShouldQueue
 
         if ($result->successful()) {
             $output = $result->output();
-            try {
-                $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
-                $this->video->update([
+
+            // Try to find the JSON part in the output
+            $jsonStart = strpos($output, '{');
+            $jsonEnd = strrpos($output, '}');
+
+            if ($jsonStart !== false && $jsonEnd !== false) {
+                $jsonString = substr($output, $jsonStart, $jsonEnd - $jsonStart + 1);
+                $report = json_decode($jsonString, true);
+            } else {
+                $report = null;
+            }
+
+            if ($report) {
+                $updateData = [
                     'status' => 'completed',
-                    'report_json' => $json,
-                ]);
-            } catch (\Exception $e) {
-                // Determine if output is just not JSON or empty
+                    'report_json' => $report,
+                ];
+
+                if (isset($report['title']) && !empty($report['title'])) {
+                    $updateData['title'] = $report['title'];
+                }
+
+                $this->video->update($updateData);
+            } else {
                 $this->video->update([
                     'status' => 'failed',
-                    'report_json' => ['error' => 'Invalid JSON output from script', 'output' => $output, 'exception' => $e->getMessage()],
+                    'report_json' => ['error' => 'Invalid JSON output from script', 'output' => $output],
                 ]);
             }
         } else {
+            $currentOutput = $result->output();
+            $errorOutput = $result->errorOutput();
+            $combinedOutput = $currentOutput . "\n" . $errorOutput;
+
+            $errorMessage = 'Process failed';
+
+            if (str_contains($combinedOutput, 'GEMINI_API_KEY not found')) {
+                $errorMessage = 'Gemini API Key is missing. Please set it in .env or provide it in the dashboard.';
+            } elseif (str_contains($combinedOutput, 'quota')) {
+                $errorMessage = 'Gemini API Quota exceeded. Please try again later or use a different key.';
+            }
+
             $this->video->update([
                 'status' => 'failed',
-                'report_json' => ['error' => 'Process failed', 'output' => $result->errorOutput()],
+                'report_json' => [
+                    'error' => $errorMessage,
+                    'output' => $combinedOutput
+                ],
             ]);
         }
     }
