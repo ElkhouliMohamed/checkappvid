@@ -79,12 +79,12 @@ def parse_timestamp(timestamp_str):
         return parts[0] * 3600 + parts[1] * 60 + parts[2]
     return 0
 
-def retry_api_call(func, *args, retries=5, delay=2, **kwargs):
+def retry_api_call(func, *args, retries=8, delay=2, **kwargs):
     for i in range(retries):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            if "429" in str(e) or "quoata" in str(e).lower() or "resource" in str(e).lower():
+            if "429" in str(e) or "quota" in str(e).lower() or "resource" in str(e).lower():
                 if i == retries - 1:
                     raise e
                 sleep_time = delay * (2 ** i)

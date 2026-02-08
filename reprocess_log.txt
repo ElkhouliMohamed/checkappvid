@@ -1,0 +1,208 @@
+Starting reprocessing of URL https://www.youtube.com/watch?v=7ccLGc2_QPE
+Current Status: failed
+Status reset to pending and model set to gemini-2.5-flash.
+Dispatching ProcessVideo job for ID 18...
+Job dispatched.
+New Status: completed
+Job COMPLETED successfully!
+Array
+(
+    [safety_score] => 70
+    [summary] => The video is a public service announcement about safe sex, showing couples engaging in intimate acts like kissing and cuddling, often with condoms present or their use implied. It then transitions to depicting the negative consequences of unprotected sex, including a positive pregnancy test and emotional distress, concluding with a message about condom use.
+    [flags] => Array
+        (
+            [0] => Array
+                (
+                    [timestamp] => 00:00
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man removing shirt and couple kissing in bed, implying intimacy.
+                )
+
+            [1] => Array
+                (
+                    [timestamp] => 00:02
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple kissing in bed.
+                )
+
+            [2] => Array
+                (
+                    [timestamp] => 00:03
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple kissing in a bathroom setting.
+                )
+
+            [3] => Array
+                (
+                    [timestamp] => 00:04
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple kissing in a kitchen setting.
+                )
+
+            [4] => Array
+                (
+                    [timestamp] => 00:05
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man's hand on woman's leg, implying intimacy.
+                )
+
+            [5] => Array
+                (
+                    [timestamp] => 00:06
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple in bed, implying intimacy with the man leaning over the woman.
+                )
+
+            [6] => Array
+                (
+                    [timestamp] => 00:07
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man holding a condom wrapper while in bed with a woman, implying intent to use a condom.
+                )
+
+            [7] => Array
+                (
+                    [timestamp] => 00:10
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple in bed, implied intimacy.
+                )
+
+            [8] => Array
+                (
+                    [timestamp] => 00:11
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man opening a condom wrapper in a bathroom, while a woman watches with concern.
+                )
+
+            [9] => Array
+                (
+                    [timestamp] => 00:13
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Close-up of the bare feet of two individuals standing close, implying intimacy.
+                )
+
+            [10] => Array
+                (
+                    [timestamp] => 00:15
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Couple kissing in a kitchen setting.
+                )
+
+            [11] => Array
+                (
+                    [timestamp] => 00:16
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Woman holding an opened condom wrapper near her mouth while being kissed by a man, implying condom use.
+                )
+
+            [12] => Array
+                (
+                    [timestamp] => 00:18
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Woman touching man's shirt, he looks uncomfortable, and a condom is visible on his shirt, implying a discussion or rejection of condom use.
+                )
+
+            [13] => Array
+                (
+                    [timestamp] => 00:20
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Woman holding an opened condom wrapper.
+                )
+
+            [14] => Array
+                (
+                    [timestamp] => 00:22
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => A condom wrapper is shown on the edge of a toilet.
+                )
+
+            [15] => Array
+                (
+                    [timestamp] => 00:24
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man on a couch showing signs of discomfort or regret, touching his crotch.
+                )
+
+            [16] => Array
+                (
+                    [timestamp] => 00:27
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => A condom wrapper is shown at the base of a ballet dancer figurine.
+                )
+
+            [17] => Array
+                (
+                    [timestamp] => 00:28
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Woman touches her stomach, implying pregnancy.
+                )
+
+            [18] => Array
+                (
+                    [timestamp] => 00:32
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => A condom wrapper is shown on a surface.
+                )
+
+            [19] => Array
+                (
+                    [timestamp] => 00:35
+                    [category] => Adult
+                    [severity] => Medium
+                    [description] => Woman holding a positive pregnancy test and reacting with distress.
+                )
+
+            [20] => Array
+                (
+                    [timestamp] => 00:38
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => A condom wrapper is shown on a surface.
+                )
+
+            [21] => Array
+                (
+                    [timestamp] => 00:39
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Man reacting with emotional distress, implying consequences of unprotected sex.
+                )
+
+            [22] => Array
+                (
+                    [timestamp] => 00:42
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Text overlay 'CONDOMS DON'T FEEL GOOD?' with images of condom wrappers, part of a public service announcement.
+                )
+
+            [23] => Array
+                (
+                    [timestamp] => 00:44
+                    [category] => Adult
+                    [severity] => Low
+                    [description] => Text overlay 'IT COULD FEEL WORSE!' with images of condom wrappers, reinforcing the public service announcement message.
+                )
+
+        )
+
+)

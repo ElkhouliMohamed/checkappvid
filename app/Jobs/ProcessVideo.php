@@ -29,7 +29,12 @@ class ProcessVideo implements ShouldQueue
         $this->video->update(['status' => 'processing']);
 
         $pythonScriptPath = base_path('scripts/analyze_video.py');
-        $pythonExecutable = 'python'; // Or full path if needed, e.g., 'C:\Python39\python.exe'
+        // Use configured python path or fallback to default
+        $pythonExecutable = env('PYTHON_PATH', 'C:\\Python314\\python.exe');
+        if (!file_exists($pythonExecutable) && $pythonExecutable !== 'python') {
+            // Fallback to just 'python' if the absolute path doesn't exist
+            $pythonExecutable = 'python';
+        }
 
         $args = [];
         if ($this->video->url) {
