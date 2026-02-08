@@ -1,4 +1,4 @@
-import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Head, Link, useForm, router, usePoll } from '@inertiajs/react';
 import { Trash2, Upload, Youtube, Play, Film, Clock, Search, Plus, Loader2 } from 'lucide-react';
 import AppLayout from '@/Layouts/AppLayout';
 import type { BreadcrumbItem } from '@/Types';
@@ -35,6 +35,7 @@ interface Video {
 }
 
 export default function Dashboard({ videos }: { videos: Video[] }) {
+    usePoll(3000);
     const { data, setData, post, processing, errors, reset } = useForm({
         url: '',
         file: null as File | null,
