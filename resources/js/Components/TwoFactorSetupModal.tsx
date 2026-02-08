@@ -19,7 +19,7 @@ import {
 import { useAppearance } from '@/Hooks/UseAppearance';
 import { useClipboard } from '@/Hooks/UseClipboard';
 import { OTP_MAX_LENGTH } from '@/Hooks/UseTwoFactorAuth';
-import { confirm } from '@/Routes/TwoFactor';
+import { confirm } from '@/routes/two-factor';
 import AlertError from './AlertError';
 import { Spinner } from './UI/Spinner';
 

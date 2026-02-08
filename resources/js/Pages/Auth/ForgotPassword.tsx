@@ -7,8 +7,8 @@ import { Button } from '@/Components/UI/Button';
 import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { login } from '@/Routes';
-import { email } from '@/Routes/Password';
+import { login } from '@/routes';
+import { email } from '@/routes/password';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     return (

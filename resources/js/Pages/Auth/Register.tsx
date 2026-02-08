@@ -6,8 +6,8 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import { Spinner } from '@/Components/UI/Spinner';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { login } from '@/Routes';
-import { store } from '@/Routes/Register';
+import { login } from '@/routes';
+import { store } from '@/routes/register';
 
 export default function Register() {
     return (

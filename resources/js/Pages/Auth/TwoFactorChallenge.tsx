@@ -11,7 +11,7 @@ import {
 } from '@/Components/UI/InputOTP';
 import { OTP_MAX_LENGTH } from '@/Hooks/UseTwoFactorAuth';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { store } from '@/Routes/TwoFactor/Login';
+import { store } from '@/routes/two-factor/login';
 
 export default function TwoFactorChallenge() {
     const [showRecoveryInput, setShowRecoveryInput] = useState<boolean>(false);

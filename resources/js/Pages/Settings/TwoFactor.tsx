@@ -9,7 +9,7 @@ import { Button } from '@/Components/UI/Button';
 import { useTwoFactorAuth } from '@/Hooks/UseTwoFactorAuth';
 import AppLayout from '@/Layouts/AppLayout';
 import SettingsLayout from '@/Layouts/Settings/Layout';
-import { disable, enable, show } from '@/Routes/TwoFactor';
+import { disable, enable, show } from '@/routes/two-factor';
 import type { BreadcrumbItem } from '@/Types';
 
 type Props = {

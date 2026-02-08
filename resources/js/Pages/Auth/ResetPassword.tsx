@@ -5,7 +5,7 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import { Spinner } from '@/Components/UI/Spinner';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { update } from '@/Routes/Password';
+import { update } from '@/routes/password';
 
 type Props = {
     token: string;

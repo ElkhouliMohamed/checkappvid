@@ -3,7 +3,7 @@ import AppearanceTabs from '@/Components/AppearanceTabs';
 import Heading from '@/Components/Heading';
 import AppLayout from '@/Layouts/AppLayout';
 import SettingsLayout from '@/Layouts/Settings/Layout';
-import { edit as editAppearance } from '@/Routes/Appearance';
+import { edit as editAppearance } from '@/routes/appearance';
 import type { BreadcrumbItem } from '@/Types';
 
 const breadcrumbs: BreadcrumbItem[] = [

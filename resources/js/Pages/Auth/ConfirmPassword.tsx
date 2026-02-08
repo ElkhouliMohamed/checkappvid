@@ -5,7 +5,7 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import { Spinner } from '@/Components/UI/Spinner';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { store } from '@/Routes/Password/Confirm';
+import { store } from '@/routes/password/confirm';
 
 export default function ConfirmPassword() {
     return (

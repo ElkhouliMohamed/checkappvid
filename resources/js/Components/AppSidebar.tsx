@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/Components/UI/Sidebar';
-import { dashboard } from '@/Routes';
+import { dashboard } from '@/routes';
 import type { NavItem } from '@/Types';
 import AppLogo from './AppLogo';
 

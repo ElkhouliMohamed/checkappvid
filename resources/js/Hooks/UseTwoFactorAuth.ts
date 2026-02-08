@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { qrCode, recoveryCodes, secretKey } from '@/Routes/TwoFactor';
+import { qrCode, recoveryCodes, secretKey } from '@/routes/two-factor';
 import type { TwoFactorSecretKey, TwoFactorSetupData } from '@/Types';
 
 export type UseTwoFactorAuthReturn = {

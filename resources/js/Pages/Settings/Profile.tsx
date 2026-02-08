@@ -9,8 +9,8 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import AppLayout from '@/Layouts/AppLayout';
 import SettingsLayout from '@/Layouts/Settings/Layout';
-import { edit } from '@/Routes/Profile';
-import { send } from '@/Routes/Verification';
+import { edit } from '@/routes/profile';
+import { send } from '@/routes/verification';
 import type { BreadcrumbItem, SharedData } from '@/Types';
 
 const breadcrumbs: BreadcrumbItem[] = [

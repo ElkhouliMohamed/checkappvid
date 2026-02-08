@@ -31,7 +31,7 @@ import { UserMenuContent } from '@/Components/UserMenuContent';
 import { useCurrentUrl } from '@/Hooks/UseCurrentUrl';
 import { useInitials } from '@/Hooks/UseInitials';
 import { cn, toUrl } from '@/Lib/Utils';
-import { dashboard } from '@/Routes';
+import { dashboard } from '@/routes';
 import type { BreadcrumbItem, NavItem, SharedData } from '@/Types';
 import AppLogo from './AppLogo';
 import AppLogoIcon from './AppLogoIcon';

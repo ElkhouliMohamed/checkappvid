@@ -4,8 +4,8 @@ import TextLink from '@/Components/TextLink';
 import { Button } from '@/Components/UI/Button';
 import { Spinner } from '@/Components/UI/Spinner';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { logout } from '@/Routes';
-import { send } from '@/Routes/Verification';
+import { logout } from '@/routes';
+import { send } from '@/routes/verification';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     return (

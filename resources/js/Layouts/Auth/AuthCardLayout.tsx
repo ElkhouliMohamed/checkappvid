@@ -8,7 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/Components/UI/Card';
-import { home } from '@/Routes';
+import { home } from '@/routes';
 
 export default function AuthCardLayout({
     children,

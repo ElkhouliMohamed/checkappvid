@@ -7,9 +7,9 @@ import { Input } from '@/Components/UI/Input';
 import { Label } from '@/Components/UI/Label';
 import { Spinner } from '@/Components/UI/Spinner';
 import AuthLayout from '@/Layouts/AuthLayout';
-import { register } from '@/Routes';
-import { store } from '@/Routes/Login';
-import { request } from '@/Routes/Password';
+import { register } from '@/routes';
+import { store } from '@/routes/login';
+import { request } from '@/routes/password';
 
 type Props = {
     status?: string;

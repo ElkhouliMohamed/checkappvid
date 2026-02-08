@@ -9,7 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/Components/UI/Card';
-import { regenerateRecoveryCodes } from '@/Routes/TwoFactor';
+import { regenerateRecoveryCodes } from '@/routes/two-factor';
 import AlertError from './AlertError';
 
 type Props = {
