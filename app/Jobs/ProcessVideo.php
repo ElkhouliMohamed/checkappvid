@@ -106,5 +106,10 @@ class ProcessVideo implements ShouldQueue
                 ],
             ]);
         }
+
+        // Cleanup: Delete the video file if it exists locally
+        if ($this->video->file_path && \Illuminate\Support\Facades\Storage::exists($this->video->file_path)) {
+            \Illuminate\Support\Facades\Storage::delete($this->video->file_path);
+        }
     }
 }
