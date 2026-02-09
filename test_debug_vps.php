@@ -13,6 +13,21 @@ $kernel->bootstrap();
 
 echo "Starting debug analysis...\n";
 
+// Check for API Key
+$apiKey = env('GEMINI_API_KEY');
+if (empty($apiKey)) {
+    echo "WARNING: GEMINI_API_KEY is not set in .env file (via env() function).\n";
+} else {
+    echo "GEMINI_API_KEY found in .env (length: " . strlen($apiKey) . ")\n";
+}
+
+$configKey = config('services.gemini.api_key');
+if (empty($configKey)) {
+    echo "WARNING: services.gemini.api_key config is empty.\n";
+} else {
+    echo "services.gemini.api_key config found.\n";
+}
+
 // 1. Check if yt-dlp is available
 echo "Checking yt-dlp availability...\n";
 $service = app(VideoAnalysisService::class);

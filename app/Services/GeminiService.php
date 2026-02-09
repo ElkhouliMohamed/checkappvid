@@ -13,11 +13,13 @@ class GeminiService
 
     public function __construct(?string $apiKey = null)
     {
-        $this->apiKey = $apiKey ?? config('services.gemini.api_key') ?? env('GEMINI_API_KEY');
+        $key = $apiKey ?? config('services.gemini.api_key') ?? env('GEMINI_API_KEY');
 
-        if (empty($this->apiKey)) {
-            throw new Exception("Gemini API Key is missing.");
+        if (empty($key)) {
+            throw new Exception("Gemini API Key is missing. Please set GEMINI_API_KEY in your .env file.");
         }
+
+        $this->apiKey = $key;
     }
 
     /**
