@@ -159,6 +159,8 @@ class VideoAnalysisService
             'best[ext=mp4]/best',
             '--no-playlist',
             '--force-overwrites',
+            '--js-runtimes',
+            'node',
             '-o',
             $outputPath,
         ];
