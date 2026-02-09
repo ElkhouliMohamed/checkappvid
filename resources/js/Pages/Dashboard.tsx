@@ -62,15 +62,20 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex flex-1 flex-col gap-8 p-6 md:p-10 max-w-7xl mx-auto w-full">
+            <div className="flex flex-1 flex-col gap-8 p-6 md:p-10 max-w-7xl mx-auto w-full relative z-10">
+                {/* Ambient Background */}
+                <div className="fixed inset-0 z-[-1] pointer-events-none">
+                    <div className="absolute top-[10%] left-[5%] w-[30%] h-[30%] bg-violet-600/20 rounded-full blur-[100px]"></div>
+                    <div className="absolute bottom-[10%] right-[5%] w-[25%] h-[25%] bg-emerald-500/10 rounded-full blur-[100px]"></div>
+                </div>
 
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">Analysis Dashboard</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-gradient">Analysis Dashboard</h1>
                         <p className="text-muted-foreground mt-1">Manage your video content safety workflow.</p>
                     </div>
-                    <Button onClick={() => document.getElementById('new-analysis-card')?.scrollIntoView({ behavior: 'smooth' })} className="rounded-full shadow-lg shadow-primary/20">
+                    <Button onClick={() => document.getElementById('new-analysis-card')?.scrollIntoView({ behavior: 'smooth' })} className="rounded-full shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90">
                         <Plus className="w-4 h-4 mr-2" /> New Analysis
                     </Button>
                 </div>
@@ -80,7 +85,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
 
                     {/* Left Column: Create Analysis (4 cols) */}
                     <div className="lg:col-span-4 space-y-6" id="new-analysis-card">
-                        <Card className="border-0 shadow-xl ring-1 ring-border/50 overflow-hidden relative group">
+                        <Card className="glass-card border-0 relative group overflow-hidden">
                             <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                             <CardHeader className="pb-4">
                                 <CardTitle className="flex items-center gap-2">
@@ -97,9 +102,9 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                     setData('file', null);
                                     setData('url', '');
                                 }}>
-                                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                                        <TabsTrigger value="youtube" className="flex items-center gap-2"><Youtube className="w-4 h-4" /> YouTube</TabsTrigger>
-                                        <TabsTrigger value="file" className="flex items-center gap-2"><Upload className="w-4 h-4" /> Upload</TabsTrigger>
+                                    <TabsList className="grid w-full grid-cols-2 mb-6 bg-secondary p-1">
+                                        <TabsTrigger value="youtube" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Youtube className="w-4 h-4" /> YouTube</TabsTrigger>
+                                        <TabsTrigger value="file" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Upload className="w-4 h-4" /> Upload</TabsTrigger>
                                     </TabsList>
 
                                     <form onSubmit={submit} className="space-y-5">
@@ -113,7 +118,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                                         placeholder="https://youtube.com/watch?v=..."
                                                         value={data.url}
                                                         onChange={(e) => setData('url', e.target.value)}
-                                                        className="pl-10"
+                                                        className="pl-10 bg-background border-input focus:border-primary/50 transition-colors"
                                                     />
                                                     <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
                                                 </div>
@@ -148,7 +153,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                                 value={data.model}
                                                 onValueChange={(value) => setData('model', value)}
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="bg-background border-input">
                                                     <SelectValue placeholder="Select a model" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -172,11 +177,11 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                                 placeholder="Use server default"
                                                 value={data.api_key}
                                                 onChange={(e) => setData('api_key', e.target.value)}
-                                                className="font-mono text-xs"
+                                                className="font-mono text-xs bg-background border-input"
                                             />
                                         </div>
 
-                                        <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-primary/20" disabled={processing}>
+                                        <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90" disabled={processing}>
                                             {processing ? (
                                                 <>
                                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Starting...
@@ -203,11 +208,11 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                             {videos.map((video, i) => (
                                 <div key={video.id} className="group relative animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${i * 50}ms` }}>
                                     <Link href={route('videos.show', video.id)} className="block h-full">
-                                        <Card className="h-full hover:shadow-md transition-all duration-300 border-muted/60 hover:border-border overflow-hidden">
+                                        <Card className="h-full glass-card hover:shadow-2xl transition-all duration-300 border-white/5 hover:border-primary/20 overflow-hidden hover:-translate-y-1">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                             <CardHeader className="pb-2">
                                                 <div className="flex justify-between items-start gap-2">
-                                                    <div className={`p-2 rounded-md ${video.status === 'completed' ? 'bg-green-500/10 text-green-500' : (video.status === 'failed' ? 'bg-red-500/10 text-red-500' : 'bg-yellow-500/10 text-yellow-500')}`}>
+                                                    <div className={`p-2 rounded-md ${video.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' : (video.status === 'failed' ? 'bg-red-500/10 text-red-500' : 'bg-amber-500/10 text-amber-500')}`}>
                                                         {video.status === 'completed' ? <CheckCircleIcon className="w-4 h-4" /> : (video.status === 'failed' ? <AlertCircleIcon className="w-4 h-4" /> : <Loader2 className="w-4 h-4 animate-spin" />)}
                                                     </div>
                                                     <span className="text-xs font-mono text-muted-foreground">{new Date(video.created_at).toLocaleDateString()}</span>
@@ -223,7 +228,10 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                                             </CardContent>
                                             <CardFooter className="pt-2">
                                                 <div className="w-full flex justify-between items-center text-xs font-medium">
-                                                    <span className="capitalize px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground border border-white/5">
+                                                    <span className={`capitalize px-2 py-0.5 rounded-full border ${video.status === 'completed' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-600' :
+                                                        video.status === 'failed' ? 'bg-red-500/5 border-red-500/20 text-red-600' :
+                                                            'bg-amber-500/5 border-amber-500/20 text-amber-600'
+                                                        }`}>
                                                         {video.status}
                                                     </span>
                                                 </div>
@@ -248,7 +256,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                             ))}
 
                             {videos.length === 0 && (
-                                <div className="col-span-full flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-muted/50 rounded-xl bg-muted/20">
+                                <div className="col-span-full flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-white/10 rounded-xl bg-white/5">
                                     <div className="p-4 bg-muted/50 rounded-full mb-4">
                                         <Film className="w-8 h-8 text-muted-foreground" />
                                     </div>

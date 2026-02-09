@@ -166,7 +166,7 @@ export default function Show({ video }: { video: Video }) {
                 </div>
 
                 {video.status !== 'completed' && video.status !== 'failed' && video.status !== 'stopped' && (
-                    <Card className="border-0 shadow-2xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10 relative overflow-hidden">
+                    <Card className="glass-card relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-muted">
                             <div className="h-full bg-primary transition-all duration-1000 ease-out" style={{
                                 width: `${video.status.toLowerCase().includes('downloading') ? 20 :
@@ -257,7 +257,7 @@ export default function Show({ video }: { video: Video }) {
                         {/* Sidebar: Score & Summary (4 cols) */}
                         <div className="lg:col-span-4 space-y-6">
                             {/* Safety Score Card */}
-                            <Card className="overflow-hidden border-0 shadow-xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10">
+                            <Card className="glass-card overflow-hidden">
                                 <CardHeader className="pb-2">
                                     <CardTitle className="flex items-center gap-2">
                                         <Shield className="w-5 h-5 text-primary" /> Safety Score
@@ -301,7 +301,7 @@ export default function Show({ video }: { video: Video }) {
                             </Card>
 
                             {/* Executive Summary */}
-                            <Card className="border-border/50 bg-card/30">
+                            <Card className="glass-card">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2 text-base">
                                         <FileText className="w-4 h-4 text-muted-foreground" /> Executive Summary: {video.title}
@@ -332,7 +332,7 @@ export default function Show({ video }: { video: Video }) {
                         <div className="lg:col-span-8 flex flex-col gap-8">
                             {/* Audio Analysis Section */}
                             {video.report_json.audio_analysis && (
-                                <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-white/10">
+                                <Card className="glass-card">
                                     <CardHeader>
                                         <div className="flex items-center justify-between">
                                             <CardTitle className="flex items-center gap-2">
@@ -396,7 +396,7 @@ export default function Show({ video }: { video: Video }) {
                                     </CardContent>
                                 </Card>
                             )}
-                            <Card className="h-full border-0 shadow-xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10">
+                            <Card className="glass-card h-full">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="flex items-center gap-2">

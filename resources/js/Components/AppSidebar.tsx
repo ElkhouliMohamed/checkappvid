@@ -40,7 +40,7 @@ const footerNavItems: NavItem[] = [
 export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="floating" className="border-r-0 bg-transparent shadow-none">
-            <SidebarHeader className="bg-background border-b border-border/50 pb-2">
+            <SidebarHeader className="border-b border-white/10 pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild className="hover:bg-accent hover:text-accent-foreground transition-colors">
