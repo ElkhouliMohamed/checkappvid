@@ -77,4 +77,36 @@ class VideoController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+    public function retry(Video $video)
+    {
+        // Only allow retry if not currently processing to avoid duplicates
+        if (in_array($video->status, ['processing', 'pending', 'downloading', 'uploading', 'analyzing'])) {
+            return back()->with('error', 'Analysis is already in progress.');
+        }
+
+        $video->update([
+            'status' => 'pending',
+            'report_json' => null, // Clear previous errors/results
+        ]);
+
+        // Redispatch
+        ProcessVideo::dispatch($video);
+
+        return back()->with('success', 'Analysis restarted.');
+    }
+
+    public function cancel(Video $video)
+    {
+        // Ideally we would kill the job, but that's hard with standard queues.
+        // We can just mark it as cancelled in DB. The job should check status periodically or we just ignore the result.
+        // For now, updating status to 'stopped' is good for UI immediate feedback.
+
+        $video->update([
+            'status' => 'stopped',
+            'report_json' => ['error' => 'Analysis stopped by user.'],
+        ]);
+
+        return back()->with('success', 'Analysis stopped.');
+    }
 }

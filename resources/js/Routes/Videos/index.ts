@@ -245,10 +245,170 @@ destroy.delete = (args: { video: number | { id: number } } | [video: number | { 
         })
     
     destroy.form = destroyForm
+/**
+* @see \App\Http\Controllers\VideoController::retry
+ * @see app/Http/Controllers/VideoController.php:81
+ * @route '/videos/{video}/retry'
+ */
+export const retry = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: retry.url(args, options),
+    method: 'post',
+})
+
+retry.definition = {
+    methods: ["post"],
+    url: '/videos/{video}/retry',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\VideoController::retry
+ * @see app/Http/Controllers/VideoController.php:81
+ * @route '/videos/{video}/retry'
+ */
+retry.url = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { video: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { video: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    video: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        video: typeof args.video === 'object'
+                ? args.video.id
+                : args.video,
+                }
+
+    return retry.definition.url
+            .replace('{video}', parsedArgs.video.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\VideoController::retry
+ * @see app/Http/Controllers/VideoController.php:81
+ * @route '/videos/{video}/retry'
+ */
+retry.post = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: retry.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\VideoController::retry
+ * @see app/Http/Controllers/VideoController.php:81
+ * @route '/videos/{video}/retry'
+ */
+    const retryForm = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: retry.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\VideoController::retry
+ * @see app/Http/Controllers/VideoController.php:81
+ * @route '/videos/{video}/retry'
+ */
+        retryForm.post = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: retry.url(args, options),
+            method: 'post',
+        })
+    
+    retry.form = retryForm
+/**
+* @see \App\Http\Controllers\VideoController::cancel
+ * @see app/Http/Controllers/VideoController.php:99
+ * @route '/videos/{video}/cancel'
+ */
+export const cancel = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: cancel.url(args, options),
+    method: 'post',
+})
+
+cancel.definition = {
+    methods: ["post"],
+    url: '/videos/{video}/cancel',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\VideoController::cancel
+ * @see app/Http/Controllers/VideoController.php:99
+ * @route '/videos/{video}/cancel'
+ */
+cancel.url = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { video: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { video: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    video: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        video: typeof args.video === 'object'
+                ? args.video.id
+                : args.video,
+                }
+
+    return cancel.definition.url
+            .replace('{video}', parsedArgs.video.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\VideoController::cancel
+ * @see app/Http/Controllers/VideoController.php:99
+ * @route '/videos/{video}/cancel'
+ */
+cancel.post = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: cancel.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\VideoController::cancel
+ * @see app/Http/Controllers/VideoController.php:99
+ * @route '/videos/{video}/cancel'
+ */
+    const cancelForm = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: cancel.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\VideoController::cancel
+ * @see app/Http/Controllers/VideoController.php:99
+ * @route '/videos/{video}/cancel'
+ */
+        cancelForm.post = (args: { video: number | { id: number } } | [video: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: cancel.url(args, options),
+            method: 'post',
+        })
+    
+    cancel.form = cancelForm
 const videos = {
     store: Object.assign(store, store),
 show: Object.assign(show, show),
 destroy: Object.assign(destroy, destroy),
+retry: Object.assign(retry, retry),
+cancel: Object.assign(cancel, cancel),
 }
 
 export default videos

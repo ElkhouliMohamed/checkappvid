@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 const route = (name: string, params?: any) => {
     if (name === 'dashboard') return '/dashboard';
     if (name === 'videos.show') return `/videos/${params}`;
+    if (name === 'videos.retry') return `/videos/${params}/retry`;
+    if (name === 'videos.cancel') return `/videos/${params}/cancel`;
     return '/';
 };
 
@@ -44,19 +46,13 @@ export default function Show({ video }: { video: Video }) {
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        if (video.status === 'processing' || video.status === 'pending') {
+        if (video.status !== 'completed' && video.status !== 'failed') {
             const interval = setInterval(() => {
                 router.reload({ only: ['video'] });
-            }, 3000);
-
-            // Artificial progress for visual feedback
-            const progressInterval = setInterval(() => {
-                setProgress(prev => (prev >= 90 ? 90 : prev + 1));
-            }, 500);
+            }, 2000); // Poll every 2 seconds
 
             return () => {
                 clearInterval(interval);
-                clearInterval(progressInterval);
             };
         }
     }, [video.status]);
@@ -123,32 +119,82 @@ export default function Show({ video }: { video: Video }) {
                     </div>
                 </div>
 
-                {video.status === 'processing' && (
+                {video.status !== 'completed' && video.status !== 'failed' && video.status !== 'stopped' && (
                     <Card className="border-0 shadow-2xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-muted">
-                            <div className="h-full bg-primary transition-all duration-300 ease-out" style={{ width: `${progress}%` }}></div>
+                            <div className="h-full bg-primary transition-all duration-1000 ease-out" style={{
+                                width: `${video.status.toLowerCase().includes('downloading') ? 20 :
+                                        video.status.toLowerCase().includes('uploading') ? 45 :
+                                            video.status.toLowerCase().includes('processing') ? 70 :
+                                                video.status.toLowerCase().includes('analyzing') ? 85 :
+                                                    video.status.toLowerCase().includes('generating') ? 95 : 5
+                                    }%`
+                            }}></div>
                         </div>
-                        <CardContent className="py-24 text-center flex flex-col items-center justify-center space-y-6">
+                        <CardContent className="py-16 text-center flex flex-col items-center justify-center space-y-6">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse"></div>
                                 <div className="relative bg-background rounded-full p-6 shadow-xl border border-border/50">
                                     <Loader2 className="w-12 h-12 animate-spin text-primary" />
                                 </div>
                             </div>
-                            <div className="space-y-2 max-w-md">
-                                <h3 className="text-xl font-semibold">Analyzing Visual Content</h3>
-                                <p className="text-muted-foreground">Using Gemini 1.5 Pro to scan for safety violations, context nuances, and audio flags.</p>
+                            <div className="space-y-4 max-w-lg w-full">
+                                <div className="space-y-1">
+                                    <h3 className="text-xl font-semibold animate-pulse">{video.status}...</h3>
+                                    <p className="text-muted-foreground text-sm">Please wait while our AI analyzes your content.</p>
+
+                                    {/* Stuck Detection Hint */}
+                                    {(new Date().getTime() - new Date(video.created_at).getTime()) > 120000 && (
+                                        <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-md text-yellow-600 dark:text-yellow-400 text-xs">
+                                            <p className="font-semibold flex items-center justify-center gap-2">
+                                                <AlertTriangle className="w-3 h-3" />
+                                                Taking longer than usual?
+                                            </p>
+                                            <p className="mt-1">
+                                                Complex videos can take up to 5 minutes. If it stays stuck, you can
+                                                <button onClick={() => router.post(route('videos.retry', video.id))} className="underline ml-1 hover:text-yellow-500 font-bold">Restart Analysis</button>.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Mock Terminal/Logs View */}
+                                <div className="mt-6 mx-auto w-full max-w-md bg-black/80 rounded-lg p-4 font-mono text-xs text-left shadow-inner border border-white/10">
+                                    <div className="flex items-center gap-2 border-b border-white/10 pb-2 mb-2 text-muted-foreground">
+                                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                        <span className="ml-2">System Logs</span>
+                                    </div>
+                                    <div className="space-y-1 text-green-400">
+                                        <p className="opacity-50">Checking resources...</p>
+                                        <p className="opacity-70">Initializing Gemini {video.model}...</p>
+                                        <p className="font-bold">&gt; {video.status}</p>
+                                        <span className="inline-block w-2 h-4 bg-green-400 animate-pulse align-middle"></span>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => router.post(route('videos.cancel', video.id))}
+                                        className="gap-2"
+                                    >
+                                        <XCircle className="w-4 h-4" /> Stop Analysis
+                                    </Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
                 )}
 
-                {video.status === 'failed' && (
+                {(video.status === 'failed' || video.status === 'stopped') && (
                     <Card className="border-destructive/50 shadow-lg bg-destructive/5">
                         <CardHeader>
                             <div className="flex items-center gap-3 text-destructive">
                                 <AlertTriangle className="w-6 h-6" />
-                                <CardTitle>Analysis Failed</CardTitle>
+                                <CardTitle>Analysis {video.status === 'stopped' ? 'Stopped' : 'Failed'}</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -161,8 +207,14 @@ export default function Show({ video }: { video: Video }) {
                                 </div>
                             )}
                         </CardContent>
-                        <CardFooter>
-                            <Button variant="outline" onClick={() => router.post(route('videos.retry', video.id))} disabled>Current Retry Unavailable</Button>
+                        <CardFooter className="gap-4">
+                            <Button
+                                onClick={() => router.post(route('videos.retry', video.id))}
+                                className="gap-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></svg>
+                                Try Again
+                            </Button>
                         </CardFooter>
                     </Card>
                 )}

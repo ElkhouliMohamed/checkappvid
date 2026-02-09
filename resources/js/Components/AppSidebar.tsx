@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, FileText, Folder, LayoutGrid } from 'lucide-react';
 import { NavFooter } from '@/Components/NavFooter';
 import { NavMain } from '@/Components/NavMain';
 import { NavUser } from '@/Components/NavUser';
@@ -21,6 +21,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Logs',
+        href: '/logs',
+        icon: FileText,
     },
 ];
 

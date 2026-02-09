@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use YouTube\YouTubeDownloader;
 
 class VideoAnalysisService
 {
@@ -135,57 +137,74 @@ class VideoAnalysisService
             mkdir($tempPath, 0755, true);
         }
 
+        // Determine yt-dlp binary path
+        $binary = $this->getYtDlpBinary();
+
         $filename = 'vid_' . uniqid() . '.mp4';
         $outputPath = $tempPath . '/' . $filename;
 
-        // Determine yt-dlp path: use env var, or default to 'yt-dlp' (system path) for non-Windows, or storage path for Windows fallback
-        $ytDlpPath = env('YT_DLP_PATH');
+        Log::info("Downloading video with yt-dlp", [
+            'url' => $url,
+            'binary' => $binary,
+            'output' => $outputPath
+        ]);
 
-        if (!$ytDlpPath) {
-            if (PHP_OS_FAMILY === 'Windows') {
-                $ytDlpPath = storage_path('bin/yt-dlp.exe');
-            } else {
-                $ytDlpPath = 'yt-dlp';
-            }
-        }
-
-        // On Windows, verify the storage path exists if we fell back to it
-        if (PHP_OS_FAMILY === 'Windows' && str_contains($ytDlpPath, 'storage') && !file_exists($ytDlpPath)) {
-            throw new Exception("yt-dlp binary not found at $ytDlpPath. Please download it to storage/bin/yt-dlp.exe or set YT_DLP_PATH in .env");
-        }
-
-        $cmd = "\"$ytDlpPath\" --format \"best[ext=mp4]\" -o \"$outputPath\" \"$url\"";
-
-        // Create a dedicated temp directory for yt-dlp extraction to avoid permission issues
-        $ytDlpTempPath = storage_path('app/temp_yt_dlp');
-        if (!file_exists($ytDlpTempPath)) {
-            mkdir($ytDlpTempPath, 0755, true);
-        }
-
-        Log::info("Downloading video with command: $cmd");
-
-        // Pass custom TEMP environment variables to the process
-        $env = [
-            'TEMP' => $ytDlpTempPath,
-            'TMP' => $ytDlpTempPath,
-            'TMPDIR' => $ytDlpTempPath,
-            'PATH' => getenv('PATH'),
+        // Construct command
+        // Use 'best' to avoid needing ffmpeg for merging, as ffmpeg might not be present
+        // 'best' selects the best single file containing both video and audio
+        // Fallback to 'bestvideo+bestaudio' if ffmpeg is present would be ideal, but 'best' is safer here
+        $command = [
+            $binary,
+            '-f',
+            'best[ext=mp4]/best',
+            '--no-playlist',
+            '--force-overwrites',
+            '-o',
+            $outputPath,
+            $url
         ];
 
-        if (PHP_OS_FAMILY === 'Windows') {
-            $env['SystemRoot'] = getenv('SystemRoot') ?: 'C:\\Windows';
+        try {
+            // Use Laravel's Process facade
+            $result = Process::timeout(600)->run($command);
+
+            if ($result->failed()) {
+                Log::error("yt-dlp failed", ['output' => $result->output(), 'error' => $result->errorOutput()]);
+                throw new Exception("Video download failed (yt-dlp error): " . $result->errorOutput());
+            }
+
+            if (!file_exists($outputPath) || filesize($outputPath) === 0) {
+                // Log the output to debug why it failed despite exit code 0
+                Log::error("yt-dlp exited successfully but file missing", [
+                    'output' => $result->output(),
+                    'error' => $result->errorOutput()
+                ]);
+                throw new Exception("Video download failed: Output file not found or empty. (Check logs for yt-dlp output)");
+            }
+
+            return $outputPath;
+
+        } catch (Exception $e) {
+            Log::error("Video download exception: " . $e->getMessage());
+            throw $e;
+        }
+    }
+    protected function getYtDlpBinary(): string
+    {
+        // 1. Check local storage bin (Windows/Linux convention in this project)
+        $localWin = storage_path('bin/yt-dlp.exe');
+        if (file_exists($localWin)) {
+            return $localWin;
         }
 
-        $result = Process::timeout(1200)->env($env)->run($cmd);
-
-        if (!$result->successful()) {
-            throw new Exception("yt-dlp download failed: " . $result->errorOutput() . " " . $result->output());
+        $localLinux = storage_path('bin/yt-dlp');
+        if (file_exists($localLinux)) {
+            // Ensure executable
+            chmod($localLinux, 0755);
+            return $localLinux;
         }
 
-        if (!file_exists($outputPath)) {
-            throw new Exception("Download succeeded but file not found at $outputPath");
-        }
-
-        return $outputPath;
+        // 2. Check global path (likely for VPS)
+        return 'yt-dlp';
     }
 }
