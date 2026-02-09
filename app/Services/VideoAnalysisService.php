@@ -191,12 +191,17 @@ class VideoAnalysisService
     }
     protected function getYtDlpBinary(): string
     {
-        // 1. Check local storage bin (Windows/Linux convention in this project)
-        $localWin = storage_path('bin/yt-dlp.exe');
-        if (file_exists($localWin)) {
-            return $localWin;
+        $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+        // 1. Check local storage bin (Windows)
+        if ($isWindows) {
+            $localWin = storage_path('bin/yt-dlp.exe');
+            if (file_exists($localWin)) {
+                return $localWin;
+            }
         }
 
+        // 2. Check local storage bin (Linux/Unix)
         $localLinux = storage_path('bin/yt-dlp');
         if (file_exists($localLinux)) {
             // Ensure executable
@@ -204,7 +209,7 @@ class VideoAnalysisService
             return $localLinux;
         }
 
-        // 2. Check global path (likely for VPS)
+        // 3. Fallback to global path
         return 'yt-dlp';
     }
 }
