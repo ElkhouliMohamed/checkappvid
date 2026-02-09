@@ -164,7 +164,7 @@ class VideoAnalysisService
         ];
 
         // Add cookies if configured (to avoid "Sign in to confirm you’re not a bot" errors)
-        $cookiesPath = env('YOUTUBE_COOKIES_PATH');
+        $cookiesPath = env('YOUTUBE_COOKIES_PATH', storage_path('app/youtube_cookies.txt'));
         if ($cookiesPath && file_exists($cookiesPath)) {
             $command[] = '--cookies';
             $command[] = $cookiesPath;

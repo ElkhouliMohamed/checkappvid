@@ -28,10 +28,10 @@ if (empty($configKey)) {
     echo "services.gemini.api_key config found.\n";
 }
 
-$cookiesPath = env('YOUTUBE_COOKIES_PATH');
+$cookiesPath = env('YOUTUBE_COOKIES_PATH', storage_path('app/youtube_cookies.txt'));
 if ($cookiesPath) {
     if (file_exists($cookiesPath)) {
-        echo "YOUTUBE_COOKIES_PATH found and file exists: $cookiesPath\n";
+        echo "YOUTUBE_COOKIES_PATH (or default) found and file exists: $cookiesPath\n";
     } else {
         echo "WARNING: YOUTUBE_COOKIES_PATH is set ($cookiesPath) but file does NOT exist.\n";
     }
