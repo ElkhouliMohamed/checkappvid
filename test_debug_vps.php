@@ -11,6 +11,15 @@ $app = require_once __DIR__ . '/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
+// Check for Node.js (Required for yt-dlp "n" parameter calculation)
+$nodeVersion = shell_exec("node -v");
+if (empty($nodeVersion)) {
+    echo "WARNING: Node.js is NOT found. yt-dlp requires Node.js to decrypt video signatures.\n";
+    echo "Please run: sudo apt update && sudo apt install nodejs -y\n";
+} else {
+    echo "Node.js found: " . trim($nodeVersion) . "\n";
+}
+
 echo "Starting debug analysis...\n";
 
 // Check for API Key
