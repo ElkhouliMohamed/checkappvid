@@ -87,7 +87,28 @@ try {
     exit(1);
 }
 
-echo "\nDownload test passed.\n";
+echo "Download test passed.\n";
+
+// List available models
+echo "Listing available models...\n";
+try {
+    $apiKey = env('GEMINI_API_KEY');
+    $response = Http::get("https://generativelanguage.googleapis.com/v1beta/models?key={$apiKey}");
+    if ($response->successful()) {
+        $models = $response->json()['models'] ?? [];
+        echo "Available Models:\n";
+        foreach ($models as $m) {
+            if (str_contains($m['name'], 'gemini')) {
+                echo " - " . $m['name'] . "\n";
+            }
+        }
+    } else {
+        echo "Failed to list models: " . $response->body() . "\n";
+    }
+} catch (Exception $e) {
+    echo "Exception listing models: " . $e->getMessage() . "\n";
+}
+
 
 // 3. Test Full Analysis
 echo "\nAttempting full analysis...\n";
