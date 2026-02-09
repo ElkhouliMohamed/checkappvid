@@ -161,7 +161,7 @@ class VideoAnalysisService
             '--no-playlist',
             '--force-overwrites',
             '--js-runtimes',
-            'node',
+            env('NODE_PATH') ? 'node:' . env('NODE_PATH') : 'node',
             '-o',
             $outputPath,
         ];
