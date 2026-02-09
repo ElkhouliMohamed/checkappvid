@@ -61,21 +61,31 @@ class VideoAnalysisService
             $video->update(['status' => "Analyzing with $model..."]);
             Log::info("Generating content with model: $model");
 
-            $prompt = "Analyze this video for adult content, violence, and other safety concerns.
+            $prompt = "Analyze this video, including its visual content, audio track (speech, background sounds), and any on-screen text.
+            Look for safety concerns such as:
+            - Adult/Sexual content (nudity, sexual acts, suggestive themes, 'change sex' discussions).
+            - Violence (physical assaults, weapons, gore).
+            - Hate Speech (slurs, discriminatory language against protected groups).
+            - Dangerous Content (harmful acts, challenges, 'bad ideas' that could cause injury).
+            - Terrorism (extremist propaganda, recruitment, violent acts).
+            - Harassment (bullying, threats).
+            - Profanity/Bad Words (offensive language).
+            - Medical/Sensitive topics (if presented in a graphic or harmful way).
+
             Provide a detailed report in JSON format with the following structure:
             {
                 \"safety_score\": 0-100 (where 100 is safe, 0 is very unsafe),
-                \"summary\": \"Brief summary of the video content\",
+                \"summary\": \"Brief summary of the video content, including audio context\",
                 \"flags\": [
                     {
                         \"timestamp\": \"MM:SS\",
-                        \"category\": \"Adult|Violence|Hate|Dangerous\",
+                        \"category\": \"Adult|Violence|Hate|Dangerous|Terrorism|Harassment|Profanity|Medical\",
                         \"severity\": \"Low|Medium|High\",
-                        \"description\": \"Description of the flagged content\"
+                        \"description\": \"Description of the flagged content, noting if it was visual or audio\"
                     }
                 ]
             }
-            Ensure the output is strictly valid JSON.";
+            Ensure the output is strictly valid JSON. Do not include markdown formatting.";
 
             $contents = [
                 [

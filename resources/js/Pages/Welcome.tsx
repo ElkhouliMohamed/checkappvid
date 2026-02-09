@@ -35,7 +35,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
             <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground font-sans overflow-x-hidden">
 
                 {/* Navbar */}
-                <header className="fixed top-0 w-full z-50 transition-all duration-300 bg-background/80 backdrop-blur-md border-b border-white/10 supports-backdrop-filter:bg-background/60">
+                <header className="fixed top-0 w-full z-50 transition-all duration-300 bg-background/95 backdrop-blur-sm border-b border-border/40">
                     <div className="container mx-auto px-6 h-20 flex justify-between items-center">
                         <div className="flex items-center gap-3 font-bold text-2xl tracking-tighter">
                             <div className="p-2 bg-primary/10 rounded-lg">
@@ -108,7 +108,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                         </div>
 
                         {/* Hero Image / Dashboard Preview */}
-                        <div className="relative rounded-2xl border border-white/10 bg-card/30 shadow-2xl p-2 md:p-3 backdrop-blur-xl mx-auto max-w-6xl transform hover:scale-[1.01] transition-transform duration-700 hover:shadow-primary/10 group">
+                        <div className="relative rounded-2xl border border-border/50 bg-card shadow-2xl p-2 md:p-3 mx-auto max-w-6xl transform hover:scale-[1.01] transition-transform duration-700 group">
                             <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-blue-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                             <div className="rounded-xl overflow-hidden border border-white/5 bg-background aspect-video md:aspect-21/9 flex items-center justify-center relative shadow-inner">
                                 <div className="absolute inset-0 bg-size-[32px_32px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]"></div>

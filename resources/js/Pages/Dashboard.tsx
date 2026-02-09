@@ -80,7 +80,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
 
                     {/* Left Column: Create Analysis (4 cols) */}
                     <div className="lg:col-span-4 space-y-6" id="new-analysis-card">
-                        <Card className="border-0 shadow-xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10 overflow-hidden relative group">
+                        <Card className="border-0 shadow-xl ring-1 ring-border/50 overflow-hidden relative group">
                             <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                             <CardHeader className="pb-4">
                                 <CardTitle className="flex items-center gap-2">
@@ -203,7 +203,7 @@ export default function Dashboard({ videos }: { videos: Video[] }) {
                             {videos.map((video, i) => (
                                 <div key={video.id} className="group relative animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${i * 50}ms` }}>
                                     <Link href={route('videos.show', video.id)} className="block h-full">
-                                        <Card className="h-full hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 border-muted/60 hover:border-primary/50 overflow-hidden bg-card/50 backdrop-blur-sm">
+                                        <Card className="h-full hover:shadow-md transition-all duration-300 border-muted/60 hover:border-border overflow-hidden">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                             <CardHeader className="pb-2">
                                                 <div className="flex justify-between items-start gap-2">

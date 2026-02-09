@@ -11,7 +11,7 @@ export function UserInfo({
 }) {
     const getInitials = useInitials();
 
-    return (
+    return !user ? null : (
         <>
             <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                 <AvatarImage src={user.avatar} alt={user.name} />

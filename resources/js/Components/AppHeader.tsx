@@ -71,7 +71,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
     return (
         <>
-            <div className="border-b border-sidebar-border/80">
+            <div className="border-b border-sidebar-border/80 bg-background sticky top-0 z-50">
                 <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                     {/* Mobile Menu */}
                     <div className="lg:hidden">
@@ -215,27 +215,29 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 ))}
                             </div>
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="size-10 rounded-full p-1"
-                                >
-                                    <Avatar className="size-8 overflow-hidden rounded-full">
-                                        <AvatarImage
-                                            src={auth.user.avatar}
-                                            alt={auth.user.name}
-                                        />
-                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
-                                <UserMenuContent user={auth.user} />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        {auth.user ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="size-10 rounded-full p-1"
+                                    >
+                                        <Avatar className="size-8 overflow-hidden rounded-full">
+                                            <AvatarImage
+                                                src={auth.user.avatar}
+                                                alt={auth.user.name}
+                                            />
+                                            <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                {getInitials(auth.user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56" align="end">
+                                    <UserMenuContent user={auth.user} />
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : null}
                     </div>
                 </div>
             </div>
