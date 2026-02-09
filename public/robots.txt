@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://checkvid.app/sitemap.xml
+Sitemap: https://checkmv.com/sitemap.xml

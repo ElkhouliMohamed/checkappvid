@@ -53,7 +53,7 @@ nano .env
 ```ini
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=http://your-server-ip-or-domain
+APP_URL=https://checkmv.com
 
 # Database
 DB_CONNECTION=mysql
