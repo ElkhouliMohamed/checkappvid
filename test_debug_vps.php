@@ -112,6 +112,8 @@ try {
 
 // 3. Test Full Analysis
 echo "\nAttempting full analysis...\n";
+$model = env('GEMINI_MODEL', 'gemini-2.0-flash');
+echo "Using Gemini Model: $model\n";
 try {
     // Create a dummy video record or use existing one
     // We'll mock the object structure to avoid DB dependency if possible, but the service expects a Model.

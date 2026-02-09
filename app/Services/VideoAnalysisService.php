@@ -56,7 +56,8 @@ class VideoAnalysisService
             $this->geminiService->waitForProcessing($fileName);
 
             // 4. Generate Content
-            $model = $video->model ?? 'gemini-2.0-flash'; // Default to 2.0-flash as confirmed available
+            $defaultModel = env('GEMINI_MODEL', 'gemini-2.0-flash');
+            $model = $video->model ?? $defaultModel;
             $video->update(['status' => "Analyzing with $model..."]);
             Log::info("Generating content with model: $model");
 
