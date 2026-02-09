@@ -28,6 +28,13 @@ interface Report {
     safety_score: number;
     summary: string;
     flags: Flag[];
+    audio_analysis?: {
+        has_speech: boolean;
+        language: string;
+        summary: string;
+        key_phrases: string[];
+        suspicious_events: Array<{ timestamp: string; description: string }>;
+    };
     error?: string;
     output?: string;
 }
@@ -322,7 +329,73 @@ export default function Show({ video }: { video: Video }) {
                         </div>
 
                         {/* Main Content: Flags (8 cols) */}
-                        <div className="lg:col-span-8">
+                        <div className="lg:col-span-8 flex flex-col gap-8">
+                            {/* Audio Analysis Section */}
+                            {video.report_json.audio_analysis && (
+                                <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-white/10">
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="flex items-center gap-2">
+                                                <div className="p-1.5 bg-blue-500/10 rounded-md">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></svg>
+                                                </div>
+                                                Audio Intelligence
+                                            </CardTitle>
+                                            <Badge variant={video.report_json.audio_analysis.has_speech ? "default" : "secondary"}>
+                                                {video.report_json.audio_analysis.has_speech ? "Speech Detected" : "No Speech"}
+                                            </Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <h4 className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wider text-[10px]">Audio Summary</h4>
+                                                    <p className="text-sm leading-relaxed">{video.report_json.audio_analysis.summary}</p>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider text-[10px]">Key Phrases</h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {video.report_json.audio_analysis.key_phrases?.length > 0 ? (
+                                                            video.report_json.audio_analysis.key_phrases.map((phrase, i) => (
+                                                                <span key={i} className="px-2.5 py-1 rounded-md bg-secondary/50 border border-border text-xs font-medium text-secondary-foreground">
+                                                                    "{phrase}"
+                                                                </span>
+                                                            ))
+                                                        ) : <span className="text-xs text-muted-foreground italic">No key phrases extracted</span>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <h4 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider text-[10px]">Suspicious Audio Events</h4>
+                                                    {video.report_json.audio_analysis.suspicious_events?.length > 0 ? (
+                                                        <div className="space-y-2">
+                                                            {video.report_json.audio_analysis.suspicious_events.map((event, i) => (
+                                                                <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-red-500/5 border border-red-500/10">
+                                                                    <Badge variant="outline" className="font-mono text-[10px] h-5 border-red-200 text-red-700 bg-red-50 dark:bg-red-950/30 dark:border-red-900 dark:text-red-400">
+                                                                        {event.timestamp}
+                                                                    </Badge>
+                                                                    <span className="text-sm font-medium text-red-600 dark:text-red-400">{event.description}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/5 border border-green-500/10 text-green-600 dark:text-green-400">
+                                                            <CheckCircle className="w-4 h-4" />
+                                                            <span className="text-sm font-medium">No suspicious audio detected</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center justify-between text-xs pt-4 border-t border-border/30">
+                                                    <span className="text-muted-foreground">Language Detected:</span>
+                                                    <span className="font-mono font-medium">{video.report_json.audio_analysis.language || 'Unknown'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
                             <Card className="h-full border-0 shadow-xl bg-card/50 backdrop-blur-xl ring-1 ring-white/10">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">

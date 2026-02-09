@@ -75,7 +75,7 @@ class VideoAnalysisService
             Provide a detailed report in JSON format with the following structure:
             {
                 \"safety_score\": 0-100 (where 100 is safe, 0 is very unsafe),
-                \"summary\": \"Brief summary of the video content, including audio context\",
+                \"summary\": \"Brief summary of the video content, including visual and audio context\",
                 \"flags\": [
                     {
                         \"timestamp\": \"MM:SS\",
@@ -83,7 +83,16 @@ class VideoAnalysisService
                         \"severity\": \"Low|Medium|High\",
                         \"description\": \"Description of the flagged content, noting if it was visual or audio\"
                     }
-                ]
+                ],
+                \"audio_analysis\": {
+                    \"has_speech\": boolean,
+                    \"language\": \"string (e.g. English, n/a)\",
+                    \"summary\": \"Specific summary of spoken content and audio events\",
+                    \"key_phrases\": [\"phrase 1\", \"phrase 2\"],
+                    \"suspicious_events\": [
+                        {\"timestamp\": \"MM:SS\", \"description\": \"Screaming/Gunshot/etc\"}
+                    ]
+                }
             }
             Ensure the output is strictly valid JSON. Do not include markdown formatting.";
 
