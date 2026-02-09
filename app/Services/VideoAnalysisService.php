@@ -161,8 +161,16 @@ class VideoAnalysisService
             '--force-overwrites',
             '-o',
             $outputPath,
-            $url
         ];
+
+        // Add cookies if configured (to avoid "Sign in to confirm you’re not a bot" errors)
+        $cookiesPath = env('YOUTUBE_COOKIES_PATH');
+        if ($cookiesPath && file_exists($cookiesPath)) {
+            $command[] = '--cookies';
+            $command[] = $cookiesPath;
+        }
+
+        $command[] = $url;
 
         try {
             // Use Laravel's Process facade

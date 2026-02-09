@@ -28,6 +28,17 @@ if (empty($configKey)) {
     echo "services.gemini.api_key config found.\n";
 }
 
+$cookiesPath = env('YOUTUBE_COOKIES_PATH');
+if ($cookiesPath) {
+    if (file_exists($cookiesPath)) {
+        echo "YOUTUBE_COOKIES_PATH found and file exists: $cookiesPath\n";
+    } else {
+        echo "WARNING: YOUTUBE_COOKIES_PATH is set ($cookiesPath) but file does NOT exist.\n";
+    }
+} else {
+    echo "Notice: YOUTUBE_COOKIES_PATH is not set. (This might be needed if YouTube blocks the VPS IP)\n";
+}
+
 // 1. Check if yt-dlp is available
 echo "Checking yt-dlp availability...\n";
 $service = app(VideoAnalysisService::class);
